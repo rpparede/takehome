@@ -1,5 +1,6 @@
 const express = require('express');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+const cors = require('cors');
 const path = require('path');
 const _ = require('lodash');
 
@@ -20,7 +21,7 @@ const gradeQuiz = (quiz, answers) => {
       result.correct += 1;
       result.questions[question.id] = true;
     } else {
-      result.incorrect += 1;  
+      result.incorrect += 1;
       result.questions[question.id] = false;
     }
   }
@@ -30,7 +31,10 @@ const gradeQuiz = (quiz, answers) => {
 
 const app = express();
 app.use(bodyParser.json());
-
+var corsOptions = {
+  origin: "http://localhost:3000"
+};
+app.use(cors(corsOptions))
 app.use(express.static(path.join(__dirname, 'build')));
 
 /**
@@ -53,7 +57,7 @@ app.get('/api/quizzes/:id', (req, res) => {
   }
 
   const questions = quiz.questions.map((q) => _.omit(q, 'answer'));
-  const result = {...quiz, questions};
+  const result = { ...quiz, questions };
 
   res.json(result);
 });
