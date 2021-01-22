@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { useEffect, useState } from 'react';
 import { Switch, Route, Link, BrowserRouter } from "react-router-dom";
 import QuizService from "./services/quiz.service";
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
 //Impost bootstrap for styling
 import "bootstrap/dist/css/bootstrap.min.css";
 import './App.css';
@@ -58,20 +60,92 @@ const Home = () => {
 }
 const About = () => <h1>About</h1>;
 const Quiz = (props) => {
-  console.log("**")
-  console.log(props.location.id)
-  const [quizDetails, setQuizesDetails] = useState([]);
+  const [quizId, setQuizId] = useState("");
+  const [quizTitle, setQuizTitle] = useState("");
+  const [quizQuestions, setQuizQuestions] = useState([]);
+  const [quizAnswers, setQuizAnswers] = useState({});
+  const [quizMarked, setQuizMarked] = useState(false);
+  const [quizScore, setQuizScore] = useState(0);
+  const [quizQuestionsMarked, setQuestionsMarked] = useState({});
   useEffect(() => {
     QuizService.getQuiz(props.location.id).then(res => {
-      console.log("Res");
+      //console.log("Res");
+      setQuizId(res.data.id)
+      setQuizTitle(res.data.title)
+      setQuizQuestions(res.data.questions)
       console.log(res);
     });
 
-
   }, []);
+  const handleSubmit = (event) => {
+
+    event.preventDefault()
+    console.log("sending data")
+    /*const data = new FormData();
+    data.append('answers', "test");*/
+
+    const data = {
+      "answers": quizAnswers
+    }
+    console.log(data);
+    QuizService.submitQuiz(quizId, data).then(res => {
+      setQuizMarked(true);
+      setQuizScore(parseInt(res.data.correct));
+      setQuestionsMarked(res.data.questions);
+      console.log(res);
+    });
+  }
+  const handleChange = (evt) => {
+    evt.preventDefault();
+    console.log("evt.target.value");
+    console.log(evt.target.value);
+    const { name, value } = evt.target;
+    setQuizAnswers({
+      ...quizAnswers,
+      [name]: value
+    })
+
+  }
+  const tryAgainHandler = (event) => {
+    event.preventDefault();
+
+    setQuizAnswers({});
+    setQuizMarked(false);
+    setQuizScore(0);
+    setQuestionsMarked({})
+  }
   return (
     <>
-      <h1>Updates</h1>
+      {console.log(quizQuestionsMarked)}
+      {quizScore > 0 && <h1>Your score is {quizScore}</h1>}
+      <Form onSubmit={handleSubmit}>
+        <Form.Group >
+          {
+            quizQuestions.length && (
+              quizQuestions.map(question =>
+                <div key={question.id}>
+                  <p>{question.text}</p>
+                  {quizMarked && <h1>{quizQuestionsMarked[question.id] && quizQuestionsMarked[question.id] ? "✔️" : "❌"}</h1>}
+                  {
+                    question.options.map(option =>
+                      <Form.Check
+                        type="radio"
+                        label={option}
+                        value={option}
+                        name={question.id}
+                        id={question.id}
+                        onChange={(e) => handleChange(e)}
+                        disabled={quizMarked}
+                      />
+                    )
+                  }
+                </div>
+              )
+            )
+          }
+          {quizMarked ? <Button onClick={tryAgainHandler} type="submit">Try Again</Button> : <Button type="submit">Submit</Button>}
+        </Form.Group>
+      </Form>
     </>
   );
 }

@@ -9,8 +9,8 @@ class QuizService {
     getQuiz(id) {
         return axios.get(API_URL + '/api/quizzes/' + id);
     }
-    submitQuiz(data) {
-        return axios.post(API_URL + '/api/quizzes/:id/attempt', data);
+    submitQuiz(id, data) {
+        return axios.post(API_URL + '/api/quizzes/' + id + '/attempt', data);
     }
 }
 
