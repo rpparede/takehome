@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Switch, Route, Link, BrowserRouter } from "react-router-dom";
 import QuizService from "./services/quiz.service";
 import Form from 'react-bootstrap/Form'
@@ -29,19 +29,26 @@ function App() {
 
 const Home = () => {
   const [quizes, setQuizes] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
   useEffect(() => {
     QuizService.getQuizes().then(res => {
       setQuizes(res.data);
-      //TODO CATCH ERROR
+      //Remove any previous error message
+      setErrorMessage('');
     }).catch(err => {
-      console.log("error")
-      console.log(err)
+      //Case when server is down, display message to user
+      if (err.request) {
+        setErrorMessage(err.message + ": Please try again in a moment. \n If the error persists please reach out to support@adminsupport.com")
+      } else {
+        setErrorMessage(err.message)
+      }
     })
   }, []);
   return (
     <>
+      {errorMessage && <h5>{errorMessage}</h5>}
       {
-        quizes.length && (
+        quizes.length > 0 && (
           quizes.map(quiz =>
             <Link key={quiz.id} to={{ pathname: `/quiz/${quiz.id}` }}>
               <h1>{quiz.title}</h1>
@@ -68,6 +75,7 @@ const Quiz = (props) => {
   const [quizScore, setQuizScore] = useState(0);
   const [quizQuestionsMarked, setQuestionsMarked] = useState({});
   const [errorMessage, setErrorMessage] = useState('');
+  const formRef = useRef(null);
   //use single hook for quiz 
   useEffect(() => {
 
@@ -83,9 +91,13 @@ const Quiz = (props) => {
       if (err.response) {
         setErrorMessage(err.message)
         // Catch 404 errors for quiz id not existing
-      } else {
+      } else if (err.request) {
+        console.log("err request")
+        // client never received a response, or request never left
+      }
+      else {
         setErrorMessage(err.message)
-        console.log("hiiiii")
+        console.log("err else")
       }
     })
 
@@ -102,8 +114,10 @@ const Quiz = (props) => {
     //console.log(data);
     QuizService.submitQuiz(quiz.id, data).then(res => {
       setQuizMarked(true);
-      setQuizScore(parseInt(res.data.correct));
-      setQuestionsMarked(res.data.questions);
+      console.log("res")
+      console.log(res.data)
+      //setQuizScore(parseInt(res.data.correct));
+      setQuestionsMarked(res.data);
       console.log(res);
     }).catch(err => {
       console.log("error send")
@@ -114,7 +128,7 @@ const Quiz = (props) => {
     })
   }
   const handleChange = (evt) => {
-    evt.preventDefault();
+    //evt.preventDefault();
     //console.log("evt.target.value");
     //console.log(evt.target.value);
     const { name, value } = evt.target;
@@ -130,38 +144,42 @@ const Quiz = (props) => {
     setQuizMarked(false);
     setQuizScore(0);
     setQuestionsMarked({})
+    formRef.current.reset();
   }
   return (
     <>
       {errorMessage}
+      {console.log("quizQuestionsMarked")}
+      {console.log(quizQuestionsMarked)}
       {quizScore > 0 && <h1>Your score is {quizScore}</h1>}
-      <Form onSubmit={handleSubmit}>
-        <Form.Group >
-          {
-            Object.keys(quiz).length && (
-              quiz.questions.map(question =>
-                <div key={question.id}>
-                  <p>{question.text}</p>
-                  {quizMarked && <h1>{quizQuestionsMarked[question.id] && quizQuestionsMarked[question.id] ? "✔️" : "❌"}</h1>}
-                  {
-                    question.options.map(option =>
-                      <Form.Check
-                        type="radio"
-                        label={option}
-                        value={option}
-                        name={question.id}
-                        id={question.id}
-                        onChange={(e) => handleChange(e)}
-                        disabled={quizMarked}
-                      />
-                    )
-                  }
-                </div>
-              )
+      <Form ref={formRef}>
+
+        {
+          Object.keys(quiz).length && (
+            quiz.questions.map(question =>
+              <div key={question.id}>
+                <p>{question.text}</p>
+                {Object.keys(quizQuestionsMarked).length > 0 && (<h1>{Object.keys(quizQuestionsMarked.questions).length && quizQuestionsMarked.questions[question.id] ? "✔️" : "❌"}</h1>)}
+                {
+                  question.options.map(option =>
+
+                    <Form.Check
+                      type="radio"
+                      label={option}
+                      value={option}
+                      name={question.id}
+                      id={question.id}
+                      onChange={(e) => handleChange(e)}
+                      disabled={quizMarked}
+                    />
+                  )
+                }
+              </div>
             )
-          }
-          {quizMarked ? <Button onClick={tryAgainHandler} type="submit">Try Again</Button> : <Button type="submit">Submit</Button>}
-        </Form.Group>
+          )
+        }
+        {quizMarked ? <Button onClick={tryAgainHandler} type="submit">Try Again</Button> : <Button onClick={handleSubmit} type="submit">Submit</Button>}
+
       </Form>
     </>
   );
