@@ -105,6 +105,7 @@ const Quiz = (props) => {
   const handleSubmit = (event) => {
     event.preventDefault()
     console.log("sending data")
+    console.log(event)
     /*const data = new FormData();
     data.append('answers', "test");*/
 
@@ -114,7 +115,7 @@ const Quiz = (props) => {
     //console.log(data);
     QuizService.submitQuiz(quiz.id, data).then(res => {
       setQuizMarked(true);
-      console.log("res")
+      console.log("calling submit")
       console.log(res.data)
       //setQuizScore(parseInt(res.data.correct));
       setQuestionsMarked(res.data);
@@ -129,7 +130,7 @@ const Quiz = (props) => {
   }
   const handleChange = (evt) => {
     //evt.preventDefault();
-    //console.log("evt.target.value");
+    console.log("evt.target.value");
     //console.log(evt.target.value);
     const { name, value } = evt.target;
     setQuizAnswers({
@@ -139,30 +140,24 @@ const Quiz = (props) => {
 
   }
   const tryAgainHandler = (event) => {
-    event.preventDefault();
-    setQuizAnswers({});
-    setQuizMarked(false);
-    setQuizScore(0);
-    setQuestionsMarked({})
-    formRef.current.reset();
+    // This part could be improved since we already have the quiz data, redux could be used instead but that is out of the scope
+    window.location.reload(false);
   }
   return (
     <>
       {errorMessage}
-      {console.log("quizQuestionsMarked")}
-      {console.log(quizQuestionsMarked)}
+
       {quizScore > 0 && <h1>Your score is {quizScore}</h1>}
-      <Form ref={formRef}>
+      {  <Form ref={formRef} onSubmit={handleSubmit} style={{ display: Object.keys(quiz).length > 0 && errorMessage == '' ? "block" : "none" }}>
 
         {
-          Object.keys(quiz).length && (
+          Object.keys(quiz).length > 0 && (
             quiz.questions.map(question =>
               <div key={question.id}>
                 <p>{question.text}</p>
                 {Object.keys(quizQuestionsMarked).length > 0 && (<h1>{Object.keys(quizQuestionsMarked.questions).length && quizQuestionsMarked.questions[question.id] ? "✔️" : "❌"}</h1>)}
                 {
                   question.options.map(option =>
-
                     <Form.Check
                       type="radio"
                       label={option}
@@ -178,9 +173,9 @@ const Quiz = (props) => {
             )
           )
         }
-        {quizMarked ? <Button onClick={tryAgainHandler} type="submit">Try Again</Button> : <Button onClick={handleSubmit} type="submit">Submit</Button>}
+        {quizMarked ? <Button onClick={tryAgainHandler} >Try Again</Button> : <Button type="submit">Submit</Button>}
 
-      </Form>
+      </Form>}
     </>
   );
 }
