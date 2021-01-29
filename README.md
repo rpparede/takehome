@@ -15,6 +15,7 @@ If you have any questions please reach out to me at: rpparede@uwaterloo.ca
 Here's a quick video of the application recorded on my machine:
 https://youtu.be/L69NHgvyVz4
 
+
 ![Screen1](./screen1.JPG)
 ![Screen2](./screen2.JPG)
 ![Screen3](./screen3.JPG)
