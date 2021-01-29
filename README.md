@@ -1,7 +1,9 @@
 # 📝 Quiz App
 
-Welcome to my version of this Quiz Application. I used the provided Node.js API and I implemented my front end in react.
-This application can scale as the number of questions in the quizzes.json file increases, so if any extra quizes are added the application will handle it
+Welcome to my version of this Quiz Application. I used the provided Node.js API and I implemented my front end in React. I used Axios to call server endpoints.
+This application can scale as the number of questions in the quizzes.json file increases, so if any extra quizes are added the application will handle it.
+
+If you have any questions please reach out to me at: rpparede@uwaterloo.ca
 
 ## Project Functionality
 * Homepage: User can view a list of available quizzes and click on them
@@ -17,30 +19,35 @@ https://youtu.be/L69NHgvyVz4
 ![Screen2](./screen2.jpg)
 ![Screen3](./screen3.jpg)
 
-## What you should submit
+## Submission 
 
-* Code available on the .zip file submited 
-* Code available in this repository: https://github.com/rpparede/takehome (Recommended)
+* Code available on the .zip file submited to Dropbox
+* Code available in this repository: https://github.com/rpparede/takehome 
 
 ## Running the project 
-Please note: Running npm start to run the client and server did not work on my machine (probaly because I use windows) when I cloned the repo. I removed this line from package.json
+Please note: Running npm start to run the client and server together did not work on my machine when I cloned the repo (probaly because I use windows). I edited this line from package.json
 "start": "node src/server & react-scripts start; kill $!". You need to run the client and server on separate terminals as described below.
 
 
 After downloading the repo, go to the directory open 2 terminals
+
 Terminal 1: Start server 
 ```
 npm install
 ```
 go to src directory using 
+```
 cd src
+```
 ```
 node server.js
 ```
 Terminal 2: Start react application on http://localhost:3000
-On the current folder where you cloned the repo run 
-npm start
 
+On the project folder where you cloned the repo run 
+```
+npm start
+```
 
 ## API Documentation
 
