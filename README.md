@@ -22,7 +22,7 @@ https://youtu.be/L69NHgvyVz4
 ## Submission 
 
 * Code available on the .zip file submited to Dropbox
-* Code available in this repository: https://github.com/rpparede/takehome 
+* Code will be available in this repository after 3:00 PM EST: https://github.com/rpparede/takehome 
 
 ## Running the project 
 Please note: Running npm start to run the client and server together did not work on my machine when I cloned the repo (probaly because I use windows). I edited this line from package.json
