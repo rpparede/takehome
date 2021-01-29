@@ -1,41 +1,46 @@
 # 📝 Quiz App
 
-Welcome! As the world's largest interview prep community and learning platform, we're always working to build better learning experiences for our users. This project is designed to give you a fun, hands-on example of what it would be like to develop products at Exponent.
+Welcome to my version of this Quiz Application. I used the provided Node.js API and I implemented my front end in react.
+This application can scale as the number of questions in the quizzes.json file increases, so if any extra quizes are added the application will handle it
 
-## Assignment
-
-In this takehome assignment, you'll be building a simple **Quiz app** that allows the user to take a multiple choice quiz, which will be graded automatically by our server for instant feedback.
-
-The backend API that provides the quiz data and grading has been implemented for you already—but it's up to you to build the user-facing experience that integrates with this API. Don't worry about storing data or user authentication for now–that's out of scope for this project.
-
-> Note: We've set up a simple React app and server using create-react-app and Express.js to make it easier to get started with building. Feel free to install any additional libraries you'd like to use. If you're not familiar with React, feel free to use a different framework!
-
-## Goals
-Here's the list of features we'd like our app to support:
+## Project Functionality
 * Homepage: User can view a list of available quizzes and click on them
 * Quiz page: User can view a quiz and see multiple choice questions
 * Grading: User can submit the quiz and see their grade 
+* Try again: User can retry the quiz in case they need to retake the test
 
-## Design
-Here's a mockup of the design that we'd like to implement:
-![Design](./mockup.png)
+## Demo
+Here's a quick video of the application recorded on my machine:
+https://youtu.be/L69NHgvyVz4
+
+![Screen1](./screen1.jpg)
+![Screen2](./screen2.jpg)
+![Screen3](./screen3.jpg)
 
 ## What you should submit
 
-* A .zip file containing your updated source code or a private fork of the repository
-* If necessary, please provide any additional notes to run or test the application
+* Code available on the .zip file submited 
+* Code available in this repository: https://github.com/rpparede/takehome (Recommended)
 
-## Development
+## Running the project 
+Please note: Running npm start to run the client and server did not work on my machine (probaly because I use windows) when I cloned the repo. I removed this line from package.json
+"start": "node src/server & react-scripts start; kill $!". You need to run the client and server on separate terminals as described below.
 
-After downloading the repo, go to the directory and run 
+
+After downloading the repo, go to the directory open 2 terminals
+Terminal 1: Start server 
 ```
 npm install
 ```
-and then run 
+go to src directory using 
+cd src
 ```
+node server.js
+```
+Terminal 2: Start react application on http://localhost:3000
+On the current folder where you cloned the repo run 
 npm start
-```
-You can access the local server at [localhost:3000](http://localhost:3000). You can then create or modify files in the `src/` directory.
+
 
 ## API Documentation
 
